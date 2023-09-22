@@ -8,7 +8,10 @@
                 : {animation: 'flash 3s', bottom: `${height}vh`, height: `calc(100vh / ${levels.length})`}"
         >
             <div v-if="!isActive" class="lift_info">
-                <div class="level_number">{{ goToLevel }}</div>
+                <div class="level_number">{{ level }}</div>
+                <span class="material-symbols-outlined">
+                    {{direction === 'up' ? 'arrow_upward' : 'arrow_downward'}}
+                </span>
             </div>
         </div>
     </div>
@@ -16,7 +19,6 @@
 </template>
 
 <script>
-
     export default {
 
         data() {
@@ -24,7 +26,8 @@
                 level: 1,
                 levelDifference: 0,
                 liftRelaxing: false,
-                height: 100 / this.levels.length * (this.goToLevel-1)
+                height: 100 / this.levels.length * (this.goToLevel-1),
+                direction: 'up'
             }
         },
 
@@ -33,6 +36,10 @@
             'goToLevel': {
                 handler() {
                     this.levelDifference = Math.abs(this.goToLevel - this.level);
+
+                    if (this.goToLevel > this.level) this.direction = 'up'
+                    else this.direction = 'down'
+
                     this.height = 100 / this.levels.length * (this.goToLevel-1);
                     this.level = this.goToLevel;
 
@@ -69,7 +76,15 @@
         position: absolute;
         color: #fff;
     }
+    .lift_info {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+    }
     .level_number {
+        color: #fff;
+    }
+    .material-symbols-outlined {
         color: #fff;
     }
     @keyframes flash {
