@@ -1,20 +1,36 @@
 <template>
-  <h1>Hello</h1>
+
+  <HouseWrapper :levelsCount="levelsCount" :liftsCount="liftsCount"/>
+
 </template>
 
 <script>
-export default {
-  name: 'App'
-}
+
+  import HouseWrapper from './components/HouseWrapper';
+
+  export default {
+
+    components: { HouseWrapper },
+
+    data() {
+      return {
+        liftsCount: 2,
+        levelsCount: 5
+      }
+    }
+  }
+
 </script>
 
-<style scoped>
-#app {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  text-align: center;
-  color: #2c3e50;
-}
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    color: #2c3e50;
+  }
+  #app {
+    padding: 0 10px;
+  }
 </style>
