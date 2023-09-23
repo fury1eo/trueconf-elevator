@@ -1,13 +1,12 @@
 <template>
-
     <div class="shaft">
         <div 
-            class="lift" 
-            :style="!liftRelaxing
+            class="elevator" 
+            :style="!elevatorRelaxing
                 ? {transition: `${levelDifference}s all ease`, bottom: `${height}vh`, height: `calc(100vh / ${levels.length})`}
-                : {animation: 'flash 3s', bottom: `${height}vh`, height: `calc(100vh / ${levels.length})`}"
+                : {animation: 'flash 3s', bottom: `${height}vh`, transition: `${levelDifference}s all ease`, height: `calc(100vh / ${levels.length})`}"
         >
-            <div v-if="!isActive" class="lift_info">
+            <div v-if="!isActive" class="elevator_info">
                 <div class="level_number">{{ level }}</div>
                 <span class="material-symbols-outlined">
                     {{direction === 'up' ? 'arrow_upward' : 'arrow_downward'}}
@@ -15,46 +14,40 @@
             </div>
         </div>
     </div>
-
 </template>
 
 <script>
     export default {
-
         data() {
             return {
                 level: 1,
                 levelDifference: 0,
-                liftRelaxing: false,
+                elevatorRelaxing: false,
                 height: 100 / this.levels.length * (this.goToLevel-1),
                 direction: 'up'
             }
         },
-
         props: [ 'levels', 'goToLevel', 'isActive'],
         watch: {
             'goToLevel': {
                 handler() {
                     this.levelDifference = Math.abs(this.goToLevel - this.level);
 
-                    if (this.goToLevel > this.level) this.direction = 'up'
-                    else this.direction = 'down'
+                    this.direction = this.goToLevel > this.level ? 'up' : 'down';
 
                     this.height = 100 / this.levels.length * (this.goToLevel-1);
                     this.level = this.goToLevel;
 
                     setTimeout(() => {
-                        this.liftRelaxing = true;
+                        this.elevatorRelaxing = true;
                         setTimeout(() => {
-                            this.liftRelaxing = false;
+                            this.elevatorRelaxing = false;
                         }, 3000)
                     }, this.levelDifference * 1000)
                 }
             }
         }
-
     }
-
 </script>
 
 <style>
@@ -65,10 +58,10 @@
         border-left: 2px solid #2c3e50;
         border-right: 2px solid #2c3e50;
     }
-    .lift {
+    .elevator {
         padding: 10px;
         left: 50%;
-        bottom: 0vh;
+        /* bottom: 0vh; */
         transform: translateX(-50%);
         width: 80%;
         background-color: #0097a7;
@@ -76,7 +69,7 @@
         position: absolute;
         color: #fff;
     }
-    .lift_info {
+    .elevator_info {
         display: flex;
         align-items: center;
         gap: 2px;
@@ -89,19 +82,19 @@
     }
     @keyframes flash {
         0% {
-            background-color: rgba(0, 151, 167, 1);
+            opacity: 1;
         }
         25% {
-            background-color: rgba(0, 151, 167, .5);
+            opacity: .5;
         }
         50% {
-            background-color: rgba(0, 151, 167, 1);
+            opacity: 1;
         }
         75% {
-            background-color: rgba(0, 151, 167, .5);
+            opacity: .5;
         }
         100% {
-            background-color: rgba(0, 151, 167, 1);
+            opacity: 1;
         }
     }
 </style>

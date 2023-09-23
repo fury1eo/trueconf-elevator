@@ -1,25 +1,19 @@
 <template>
-
-  <HouseWrapper :levelsCount="levelsCount" :liftsCount="liftsCount"/>
-
+  <HouseWrapper :levelsCount="levelsCount" :elevatorsCount="elevatorsCount"/>
 </template>
 
 <script>
-
   import HouseWrapper from './components/HouseWrapper';
 
   export default {
-
     components: { HouseWrapper },
-
     data() {
       return {
-        liftsCount: 2,
-        levelsCount: 5
+        elevatorsCount: 3,
+        levelsCount: 7
       }
     }
   }
-
 </script>
 
 <style>
