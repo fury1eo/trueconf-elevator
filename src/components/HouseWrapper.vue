@@ -47,6 +47,7 @@ export default {
             levels: getLevelsArray(this.levelsCount),
             elevators: getElevatorsArray(this.elevatorsCount),
             levelsQueue: [],
+            clickedButtons: [],
         }
     },
     props: [ 'levelsCount', 'elevatorsCount' ],
@@ -54,6 +55,7 @@ export default {
     methods: {
         addLevelInQueue(level) {
             this.levelsQueue.push(level);
+            this.clickedButtons.push(level)
             if (this.levelsQueue.length === 1) this.setNextLevel(this.levelsQueue[0])
         },
         setNextLevel(level) {
@@ -67,8 +69,11 @@ export default {
 
                     setTimeout(() => {
                         this.elevators[elevatorId-1].isActive = true;
+                        this.clickedButtons = this.clickedButtons.filter(item => item !== level);
                         if (this.levelsQueue.length > 0) this.setNextLevel(this.levelsQueue[0])
                     }, Math.abs(currentLevel - level) * 1000 + 3000)
+                } else {
+                    this.clickedButtons = this.clickedButtons.filter(item => item !== level);
                 }
                 this.levelsQueue.shift();
             }
