@@ -9,7 +9,7 @@
     components: { HouseWrapper },
     data() {
       return {
-        elevatorsCount: 3,
+        elevatorsCount: 1,
         levelsCount: 7
       }
     }

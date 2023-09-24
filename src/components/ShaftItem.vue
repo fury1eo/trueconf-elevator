@@ -2,14 +2,14 @@
     <div class="shaft">
         <div 
             class="elevator" 
-            :style="!elevatorRelaxing
-                ? {transition: `${levelDifference}s all ease`, bottom: `${height}vh`, height: `calc(100vh / ${levels.length})`}
-                : {animation: 'flash 3s', bottom: `${height}vh`, transition: `${levelDifference}s all ease`, height: `calc(100vh / ${levels.length})`}"
+            :style="!isRelaxing
+                ? {transition: `${levelDifference}s all linear`, bottom: `${height}%`, height: `calc(100% / ${levels.length})`}
+                : {animation: 'flash 3s', bottom: `${height}%`, transition: `${levelDifference}s all linear`, height: `calc(100% / ${levels.length})`}"
         >
             <div v-if="!isActive" class="elevator_info">
-                <div class="level_number">{{ level }}</div>
+                <div class="level_number">{{ goToLevel }}</div>
                 <span class="material-symbols-outlined">
-                    {{direction === 'up' ? 'arrow_upward' : 'arrow_downward'}}
+                    {{ `arrow_${direction}ward` }}
                 </span>
             </div>
         </div>
@@ -20,31 +20,22 @@
     export default {
         data() {
             return {
-                level: 1,
-                levelDifference: 0,
-                elevatorRelaxing: false,
+                levelDifference: Math.abs(this.goToLevel - this.currentLevel),
                 height: 100 / this.levels.length * (this.goToLevel-1),
                 direction: 'up'
             }
         },
-        props: [ 'levels', 'goToLevel', 'isActive'],
+        props: [ 'levels', 'currentLevel', 'goToLevel', 'isActive', 'isRelaxing'],
         watch: {
             'goToLevel': {
                 handler() {
-                    this.levelDifference = Math.abs(this.goToLevel - this.level);
-
-                    this.direction = this.goToLevel > this.level ? 'up' : 'down';
-
-                    this.height = 100 / this.levels.length * (this.goToLevel-1);
-                    this.level = this.goToLevel;
-
-                    setTimeout(() => {
-                        this.elevatorRelaxing = true;
-                        setTimeout(() => {
-                            this.elevatorRelaxing = false;
-                        }, 3000)
-                    }, this.levelDifference * 1000)
-                }
+                    if (this.goToLevel !== this.currentLevel) {
+                        this.levelDifference = Math.abs(this.goToLevel - this.currentLevel);
+                        this.direction = this.goToLevel > this.currentLevel ? 'up' : 'down';
+                        this.height = 100 / this.levels.length * (this.goToLevel-1);
+                    }
+                },
+                immediate: true
             }
         }
     }
@@ -54,14 +45,13 @@
     .shaft {
         position: relative;
         width: 180px;
-        height: 100vh;
+        height: 100%;
         border-left: 2px solid #2c3e50;
         border-right: 2px solid #2c3e50;
     }
     .elevator {
         padding: 10px;
         left: 50%;
-        /* bottom: 0vh; */
         transform: translateX(-50%);
         width: 80%;
         background-color: #0097a7;
