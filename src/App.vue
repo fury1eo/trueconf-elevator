@@ -9,8 +9,9 @@
     components: { HouseWrapper },
     data() {
       return {
-        elevatorsCount: 1,
-        levelsCount: 7
+        // Set your values here
+        elevatorsCount: 1, // Elevators count
+        levelsCount: 7 // Floors count
       }
     }
   }

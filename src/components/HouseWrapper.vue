@@ -32,6 +32,7 @@
 import ShaftItem from './ShaftItem';
 import sleep from '../utils/sleep';
 
+// Function creates array of floors numbers
 function getLevelsArray(count) {
     let arr = [];
     for (let i = count; i > 0; i--) {
@@ -40,6 +41,7 @@ function getLevelsArray(count) {
     return arr;
 }
 
+// Function creates array of elevators objects
 function getElevatorsArray(count) {
     let arr = [];
     for (let i = 0; i < count; i++) {
@@ -99,44 +101,58 @@ export default {
         
     },
     methods: {
+        // Function checks elevators positions and adds floor in queue
         addLevelInQueue(level) {
+            // Checking elevators positions
             if (this.elevators.some(elevator => 
                 (elevator.level === level && elevator.isActive) || elevator.goTo === level
             )) return;
 
+            // If queue not includes current floor then push
             if (!this.levelsQueue.includes(level)) {
                 this.levelsQueue.push(level);
                 this.clickedButtons.push(level);
                 if (this.levelsQueue.length === 1) this.setNextLevel(this.levelsQueue[0]);
             }
         },
+        // Function changes elevator's states
         async setNextLevel(level) {
+            // Find free elevator or get 0 
             let elevatorId = this.findFreeElevator(level);
 
+            // If elevator was found
             if (elevatorId) {
+                // Delete first floor in queue and change elevator's states to move it
                 this.levelsQueue.shift();
                 let currentLevel = this.elevators[elevatorId-1].level;
                 this.elevators[elevatorId-1].goTo = level;
                 this.elevators[elevatorId-1].isActive = false;
 
+                // Waiting for some seconds 
                 await sleep(Math.abs(currentLevel - level));
 
+                // Return clicked button's base color and set elevator as relaxing
                 this.clickedButtons = this.clickedButtons.filter(item => item !== level);
                 this.elevators[elevatorId-1].isRelaxing = true;
                 this.elevators[elevatorId-1].level = this.elevators[elevatorId-1].goTo;
 
+                // Waiting for 3 seconds (elevator is relaxing)
                 await sleep(3);
 
+                // Set elevator as free
                 this.elevators[elevatorId-1].isActive = true;
                 this.elevators[elevatorId-1].isRelaxing = false;
                 if (this.levelsQueue.length > 0) this.setNextLevel(this.levelsQueue[0]);
             }
         },
+        // Function finds free elevator closest to floor
         findFreeElevator(level) {
+            // Get only free elevators
             let tempElevators = this.elevators.filter(elevator => elevator.isActive);
             let minDifference = this.levels.length;
             let elevatorId = 0;
 
+            // Get min distance between elevator and floor and return elevator's id
             for (let elevator of tempElevators) {
                 if (Math.abs(level - elevator.level) < minDifference) {
                     minDifference = Math.abs(level - elevator.level);
