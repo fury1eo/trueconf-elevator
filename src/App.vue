@@ -11,7 +11,7 @@
       return {
         // Set your values here
         elevatorsCount: 1, // Elevators count
-        levelsCount: 7 // Floors count
+        levelsCount: 5 // Floors count
       }
     }
   }
